@@ -4,21 +4,24 @@ plugins {
 }
 
 android {
-    namespace 'com.example.octopuslog' // замени на свой
+    namespace 'com.example.octopuslog'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.octopuslog" // замени на свой
+        applicationId "com.example.octopuslog"
         minSdk 24
         targetSdk 34
         versionCode 1
         versionName "1.0"
 
-        // Для PDF и FileProvider
         resourceConfigurations += ['en', 'ru']
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -40,10 +43,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
-    // Для PDF-генерации
     implementation 'androidx.documentfile:documentfile:1.0.1'
-
-    // Для отправки email
     implementation 'androidx.activity:activity-ktx:1.8.0'
 }
