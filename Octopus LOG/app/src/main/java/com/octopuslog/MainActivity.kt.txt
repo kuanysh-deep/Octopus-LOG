@@ -1,0 +1,96 @@
+package com.octopuslog
+
+import android.content.Intent
+import android.graphics.*
+import android.graphics.pdf.PdfDocument
+import android.net.Uri
+import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
+import com.octopuslog.databinding.ActivityMainBinding
+import java.io.File
+import java.io.FileOutputStream
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_OctopusLog)
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.btnSign.setOnClickListener {
+            startActivity(Intent(this, SignatureActivity::class.java))
+        }
+
+        binding.btnSave.setOnClickListener {
+            generatePdf()
+        }
+
+        binding.btnOpenPdf.setOnClickListener {
+            val pdfFile = File(getExternalFilesDir(null), "Octopus/report.pdf")
+            if (pdfFile.exists()) {
+                val uri = FileProvider.getUriForFile(this, "$packageName.provider", pdfFile)
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(uri, "application/pdf")
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "PDF ещё не создан", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnSendPdf.setOnClickListener {
+            val pdfFile = File(getExternalFilesDir(null), "Octopus/report.pdf")
+            if (pdfFile.exists()) {
+                val uri = FileProvider.getUriForFile(this, "$packageName.provider", pdfFile)
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "application/pdf"
+                    putExtra(Intent.EXTRA_SUBJECT, "Отчёт по измерениям")
+                    putExtra(Intent.EXTRA_TEXT, "Прикреплён PDF-файл с подписью.")
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                }
+                startActivity(Intent.createChooser(intent, "Выберите Email-клиент"))
+            } else {
+                Toast.makeText(this, "PDF ещё не создан", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun generatePdf() {
+        val document = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+        val page = document.startPage(pageInfo)
+
+        val canvas = page.canvas
+        val paint = Paint().apply {
+            textSize = 16f
+            color = Color.BLACK
+        }
+
+        canvas.drawText("Рабочие записи по измерениям", 40f, 50f, paint)
+
+        val signatureFile = File(getExternalFilesDir(null), "Octopus/signature.png")
+        if (signatureFile.exists()) {
+            val signatureBitmap = BitmapFactory.decodeFile(signatureFile.path)
+            val scaledBitmap = Bitmap.createScaledBitmap(signatureBitmap, 200, 100, true)
+            canvas.drawText("Подпись:", 40f, 90f, paint)
+            canvas.drawBitmap(scaledBitmap, 40f, 100f, null)
+        } else {
+            canvas.drawText("Подпись отсутствует", 40f, 100f, paint)
+        }
+
+        document.finishPage(page)
+
+        val pdfFile = File(getExternalFilesDir(null), "Octopus/report.pdf")
+        document.writeTo(FileOutputStream(pdfFile))
+        document.close()
+
+        Toast.makeText(this, "PDF создан", Toast.LENGTH_SHORT).show()
+    }
+}
