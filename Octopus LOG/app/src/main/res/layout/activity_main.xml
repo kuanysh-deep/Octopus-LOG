@@ -1,47 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    tools:context=".MainActivity">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.octopus.log">
 
-    <Button
-        android:id="@+id/btnSign"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Нарисовать подпись"
-        android:backgroundTint="#007AFF"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp" />
+    <application
+        android:label="Octopus LOG"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Сохранить PDF"
-        android:backgroundTint="#5856D6"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp" />
-
-    <Button
-        android:id="@+id/btnOpenPdf"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Открыть PDF"
-        android:backgroundTint="#34C759"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp" />
-
-    <Button
-        android:id="@+id/btnSendPdf"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Отправить PDF по Email"
-        android:backgroundTint="#FF9500"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp" />
-
-</LinearLayout>
+</manifest>
